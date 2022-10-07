@@ -1,0 +1,93 @@
+<aura:component controller="kanbanController" 
+implements="forceCommunity:themeLayout,force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes"
+access="global" extends="c:CustomerCommunity_LoggedInUser_HeaderCmp">
+<aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+<aura:attribute name="valuesList" type="List"/>
+<aura:attribute name="showTable" type="boolean" default="false"/>
+<aura:attribute name="selectedVal" type="String"/>
+<aura:attribute name="isModalOpen" type="boolean" default="false"/>
+<aura:attribute name="disableOkBtn" type="boolean" default="true"/>
+<lightning:button label="Show Modal" variant="brand" onclick="{!c.openModel}"/>
+
+<div class="slds-m-around_xx-large">
+    
+    <!--Use aura:if tag to display/hide popup based on isModalOpen value-->  
+    <aura:if isTrue="{!v.isModalOpen}">
+         
+        <!-- Modal/Popup Box starts here-->
+        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <!-- Modal/Popup Box Header Starts here-->
+                <header class="slds-modal__header">
+                    <lightning:buttonIcon iconName="utility:close"
+                                          onclick="{! c.closeModel }"
+                                          alternativeText="close"
+                                          variant="bare-inverse"
+                                          class="slds-modal__close"/>
+                    <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Kanban Settings</h2>
+                    <div class="slds-p-horizontal-medium">
+   
+   
+                        <div class="slds-form-element__control">
+                            <!--<div class="slds-select_container">-->
+                                <lightning:select aura:id="valId" name="select1" label="Group by" required="true" onchange="{!c.handleChange}">
+                                    <option value="Null">-None-</option>  
+                                    <aura:iteration items="{!v.valuesList}" var="val">
+                                        <option value="{!val.Api_Label__c}" >
+                                            {!val.MasterLabel}
+                                          </option>
+                                    </aura:iteration>
+                               </lightning:select>
+                            <!--</div>-->
+                        </div>
+                    
+                   </div>
+                </header>
+                <!--Modal/Popup Box Body Starts here-->
+                
+                <!--Modal/Popup Box Footer Starts here-->
+                <footer class="slds-modal__footer">
+                    <lightning:button 
+                                      class="btn btn-primary leftButton"
+                                      variant="neutral"
+                                      label="Cancel"
+                                      title="Cancel"
+                                      onclick="{! c.closeModel }"/>
+                    <lightning:button 
+                                      class="btn btn-primary rightButton"
+                                      variant="brand"
+                                      label="OK"
+                                      title="OK"
+                                      disabled="{!v.disableOkBtn}"
+                                      onclick="{!c.submitDetails}"/>
+                </footer>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </aura:if>
+</div>
+
+<aura:if isTrue="{!v.showTable}">
+  <c:dragAndDrop kanbanPicklistField="{!v.selectedVal}"></c:dragAndDrop>
+</aura:if>
+<!--<div class="slds-p-horizontal-medium">
+   
+   
+    <div class="slds-form-element__control">
+        <div class="slds-select_container">
+            <lightning:select aura:id="valId" name="select1" label="Group by" required="true" onchange="{!c.handleChange}">
+                <option value="">-None-</option>  
+                <aura:iteration items="{!v.valuesList}" var="val">
+                    <option value="{!val.Api_Label__c}" >
+                        {!val.MasterLabel}
+                      </option>
+                </aura:iteration>
+           </lightning:select>
+        </div>
+    </div>
+
+</div>-->
+
+
+</aura:component>
+	
