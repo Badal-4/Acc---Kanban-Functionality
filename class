@@ -1,0 +1,45 @@
+public class kanbanController {
+
+    @AuraEnabled 
+    public static List<Kanban_View__mdt> getValuesForGroupBy()
+    {
+        List<Kanban_View__mdt> groupByValuesList = new List<Kanban_View__mdt>();
+        
+        groupByValuesList = [Select MasterLabel,Api_Label__c from Kanban_View__mdt];
+
+        if(!groupByValuesList.isEmpty())
+        {
+            return groupByValuesList;
+        }
+        else 
+        {
+            return null;
+        }
+    }
+    
+    @AuraEnabled
+    public static kanbanWrap getKanbanWrap(String objName, String[] objFields, String kanbanField) {
+        List<String> lstPickvals=new List<String>();
+        for (Schema.PicklistEntry a : Schema.getGlobalDescribe().get(objName).getDescribe().fields.getMap().get(kanbanField).getDescribe().getPickListValues())
+            lstPickvals.add(a.getValue());
+        System.debug(lstPickvals);
+        
+        String query = 'SELECT Id,';
+        for(String s:objFields){
+            query += s+' ,';
+        }
+        query = query.removeEnd(',');
+        query += ' FROM ' + objName +' Where '+kanbanField+' != null';
+       //query += ' FROM ' + objName;
+        System.debug('qq  ' + query);
+        
+        return new kanbanWrap(Database.query(query), lstPickvals);
+    }
+    
+    @AuraEnabled
+    public static String getUpdateStage(Id recId, String kanbanField, String kanbanNewValue) {
+        SObject o1 = recId.getSObjectType().newSObject(recId);
+        o1.put(kanbanField,kanbanNewValue);
+        update o1;
+        return 'Success';
+    }
