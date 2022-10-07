@@ -1,0 +1,40 @@
+({
+	updatePickVal : function(component, recId, pField, pVal) {
+        //Id recId, String kanbanField, String kanbanNewValue
+		var action = component.get("c.getUpdateStage");
+        action.setParams({
+            "recId":recId,
+            "kanbanField":pField,
+            "kanbanNewValue":pVal
+        });
+        action.setCallback(this, function(response){
+            var state = response.getState();
+            if (state === "SUCCESS") {
+                console.log('Response Check-->'+response.getReturnValue());
+                document.getElementById(recId).style.backgroundColor = "#04844b";
+                setTimeout(function(){ document.getElementById(recId).style.backgroundColor = ""; }, 300);
+            }
+        });
+        $A.enqueueAction(action);
+	},
+
+    getData : function(component,event,helper)
+    {
+    var action = component.get("c.getKanbanWrap");
+    action.setParams({
+        "objName":component.get("v.objName"),
+        "objFields":component.get("v.objFields"),
+        "kanbanField":component.get("v.kanbanPicklistField")
+    });
+    action.setCallback(this, function(response){
+        var state = response.getState();
+        if (state === "SUCCESS") {
+            var res  = response.getReturnValue();
+           
+            component.set("v.kanbanData", response.getReturnValue());
+           
+        }
+    });
+    $A.enqueueAction(action);
+}
+})
