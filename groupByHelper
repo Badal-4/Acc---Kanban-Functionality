@@ -1,0 +1,19 @@
+({
+    getValues : function(component,event,helper)
+    {
+        var action = component.get("c.getValuesForGroupBy");
+       
+        action.setCallback(this, function(response){
+            var state = response.getState();
+            if (state === "SUCCESS") {
+                console.log('Values-->'+JSON.stringify(response.getReturnValue()));
+                component.set("v.valuesList", response.getReturnValue());
+            }
+            else 
+            {
+                console.log('Error-->');
+            }
+        });
+        $A.enqueueAction(action); 
+    }
+})
